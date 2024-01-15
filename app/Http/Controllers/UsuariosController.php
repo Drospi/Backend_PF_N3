@@ -40,19 +40,7 @@ class UsuariosController extends Controller implements JWTSubject
         $usuario->fechamodificacion = $request->fechamodificacion;
         $usuario->usuariocreacion = $request->usuariocreacion;
         $usuario->usuariomodificacion = $request->usuariomodificacion;
-
-
         $usuario->save();
-        $bitacora = new Bitacoras();
-        $bitacora->idusuario = $usuario->id;
-        $bitacora->bitacora = 'Se ha registrado un nuevo usuario';
-        $bitacora->fecha = $request->fecha;
-        $bitacora->hora = $request->hora;
-        $bitacora->ip = $request->ip;
-        $bitacora->os = $request->os;
-        $bitacora->navegador = $request->navegador;
-        $bitacora->usuario = $request->usuario;
-        $bitacora->save();
     }
 
     /**

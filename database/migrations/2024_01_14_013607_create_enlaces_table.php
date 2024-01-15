@@ -17,9 +17,10 @@ return new class extends Migration
             $table->foreignId('idrol')->constrained('roles','idrol')->onDelete('cascade');
             $table->string('descripcion');
             $table->date('fechacreacion');
-            $table->date('fechamodificacion');
+            $table->date('fechamodificacion')->nullable();
             $table->string('usuariocreacion');
-            $table->string('usuariomodificacion');
+            $table->string('usuariomodificacion')->nullable();
+            $table->timestamps();
         });
     }
 

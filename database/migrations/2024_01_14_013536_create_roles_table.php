@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id('idrol');
             $table->string('rol');
             $table->date('fechacreacion');
-            $table->date('fechamodificacion');
+            $table->date('fechamodificacion')->nullable();
             $table->string('usuariocreacion');
-            $table->string('usuariomodificacion');
+            $table->string('usuariomodificacion')->nullable();
+            $table->timestamps();
         });
     }
 

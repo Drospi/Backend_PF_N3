@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Roles;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class RolesController extends Controller
 {
@@ -28,7 +29,13 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rol = new Roles();
+        $rol->rol = $request->rol;
+        $rol->fechacreacion = Carbon::now()->format('Y-m-d');
+        $rol->fechamodificacion = null;
+        $rol->usuariocreacion = $request->usuariocreacion;
+        $rol->usuariomodificacion = null;
+        $rol->save();
     }
 
     /**

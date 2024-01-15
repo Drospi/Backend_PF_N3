@@ -14,15 +14,16 @@ return new class extends Migration
         Schema::create('paginas', function (Blueprint $table) {
             $table->id('idpagina');
             $table->date('fechacreacion');
-            $table->date('fechamodificacion');
+            $table->date('fechamodificacion')->nullable();
             $table->string('usuariocreacion');
-            $table->string('usuariomodificacion');
+            $table->string('usuariomodificacion')->nullable();
             $table->string('url');
             $table->string('icono');
             $table->string('nombre');
             $table->string('descripcion');
             $table->string('estado');
             $table->string('tipo');
+            $table->timestamps();
         });
     }
 

@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('usuarios', function (Blueprint $table) {
             $table->id('idusuario');
-            $table->foreignId('idpersona')->nullable()->constrained('personas', 'idpersona')->onDelete('set null');
+            $table->foreignId('idpersona')->nullable()->constrained('personas', 'idpersona')->onDelete('cascade');
             $table->foreignId('idrol')->nullable()->constrained('roles', 'idrol')->onDelete('set null');
             $table->string('usuario')->unique();
             $table->string('clave');
-            $table->tinyInteger('habilitado')->default('1');
+            $table->boolean('habilitado')->default(false);
             $table->date('fechacreacion');
-            $table->date('fechamodificacion');
+            $table->date('fechamodificacion')->nullable();
             $table->string('usuariocreacion');
-            $table->string('usuariomodificacion');
+            $table->string('usuariomodificacion')->nullable();
+            $table->timestamps();
         });
     }
 

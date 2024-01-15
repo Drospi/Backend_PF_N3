@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bitacoras', function (Blueprint $table) {
             $table->id('idbitacora');
-            $table->foreignId('idusuario')->nullable()->constrained('usuarios','idusuario')->onDelete('set null');
+            $table->foreignId('idusuario')->nullable()->constrained('usuarios','idusuario')->onDelete('set null')->onUpdate('cascade');
             $table->string('bitacora');
             $table->date('fecha');
             $table->time('hora');
@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('os');
             $table->string('navegador');
             $table->string('usuario');
+            $table->timestamps();
         });
     }
 
