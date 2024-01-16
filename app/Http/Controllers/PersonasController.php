@@ -62,6 +62,13 @@ class PersonasController extends Controller
         $usuario->usuariomodificacion = null;
         $usuario->save();
 
+        $user = new User();
+        $user->id = $usuario->id;
+        $user->name = $request->usuario;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->clave);
+        $user->save();
+
         $bitacora = new Bitacoras();
         $bitacora->idusuario = $usuario->id;
         $bitacora->bitacora = 'Se ha registrado un nuevo usuario';
