@@ -13,7 +13,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        //
+        return Roles::all();
     }
 
     /**
@@ -41,9 +41,9 @@ class RolesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Roles $roles)
+    public function show(Roles $id)
     {
-        //
+        return Roles::find($id);
     }
 
     /**
@@ -57,16 +57,23 @@ class RolesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Roles $roles)
+    public function update(Request $request, Roles $id)
     {
-        //
+        $rol = Roles::find($id);
+        $rol->rol = $request->rol;
+        $rol->fechacreacion = Carbon::now()->format('Y-m-d');
+        $rol->fechamodificacion = null;
+        $rol->usuariocreacion = $request->usuariocreacion;
+        $rol->usuariomodificacion = null;
+        $rol->save();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Roles $roles)
+    public function destroy(Roles $id)
     {
-        //
+        $rol = Roles::find($id);
+        $rol->delete();
     }
 }
