@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bitacoras;
 use App\Models\Roles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -36,6 +37,17 @@ class RolesController extends Controller
         $rol->usuariocreacion = $request->usuariocreacion;
         $rol->usuariomodificacion = null;
         $rol->save();
+
+        $bitacora = new Bitacoras();
+        $bitacora->idusuario = $request->idusuario;
+        $bitacora->bitacora = 'Se ha registrado un nuevo rol';
+        $bitacora->fecha = Carbon::now()->format('Y-m-d');
+        $bitacora->hora = Carbon::now()->format('H:i:s');
+        $bitacora->ip = $request->ip();
+        $bitacora->os = $request->server('HTTP_USER_AGENT');
+        $bitacora->navegador = $request->server('HTTP_USER_AGENT');
+        $bitacora->usuario = $request->usuariocreacion;
+        $bitacora->save();
     }
 
     /**
@@ -66,6 +78,17 @@ class RolesController extends Controller
         $rol->usuariocreacion = $request->usuariocreacion;
         $rol->usuariomodificacion = null;
         $rol->save();
+
+        $bitacora = new Bitacoras();
+        $bitacora->idusuario = $request->idusuario;
+        $bitacora->bitacora = 'Se ha editado el rol con id: ' . $rol->idrol;
+        $bitacora->fecha = Carbon::now()->format('Y-m-d');
+        $bitacora->hora = Carbon::now()->format('H:i:s');
+        $bitacora->ip = $request->ip();
+        $bitacora->os = $request->server('HTTP_USER_AGENT');
+        $bitacora->navegador = $request->server('HTTP_USER_AGENT');
+        $bitacora->usuario = $request->usuariocreacion;
+        $bitacora->save();
     }
 
     /**

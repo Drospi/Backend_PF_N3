@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bitacoras;
 use App\Models\Paginas;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PaginasController extends Controller
@@ -41,6 +43,17 @@ class PaginasController extends Controller
         $pagina->tipo = $request->tipo;
 
         $pagina->save();
+
+        $bitacora = new Bitacoras();
+        $bitacora->idusuario = $request->idusuario;
+        $bitacora->bitacora = 'Se ha registrado una nueva pagina';
+        $bitacora->fecha = Carbon::now()->format('Y-m-d');
+        $bitacora->hora = Carbon::now()->format('H:i:s');
+        $bitacora->ip = $request->ip();
+        $bitacora->os = $request->server('HTTP_USER_AGENT');
+        $bitacora->navegador = $request->server('HTTP_USER_AGENT');
+        $bitacora->usuario = $request->usuariocreacion;
+        $bitacora->save();
     }
 
     /**

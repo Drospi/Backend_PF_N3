@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bitacoras;
 use App\Models\Enlaces;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class EnlacesController extends Controller
@@ -38,6 +40,17 @@ class EnlacesController extends Controller
         $enlace->usuariomodificacion = $request->usuariomodificacion;
 
         $enlace->save();
+
+        $bitacora = new Bitacoras();
+        $bitacora->idusuario = $request->idusuario;
+        $bitacora->bitacora = 'Se ha registrado un nuevo enlace';
+        $bitacora->fecha = Carbon::now()->format('Y-m-d');
+        $bitacora->hora = Carbon::now()->format('H:i:s');
+        $bitacora->ip = $request->ip();
+        $bitacora->os = $request->server('HTTP_USER_AGENT');
+        $bitacora->navegador = $request->server('HTTP_USER_AGENT');
+        $bitacora->usuario = $request->usuariocreacion;
+        $bitacora->save();
     }
 
     /**
@@ -72,6 +85,17 @@ class EnlacesController extends Controller
         $enlace->usuariomodificacion = $request->usuariomodificacion;
 
         $enlace->save();
+
+        $bitacora = new Bitacoras();
+        $bitacora->idusuario = $request->idusuario;
+        $bitacora->bitacora = 'Se ha editado el enlace con id: ' . $enlace->idenlace;
+        $bitacora->fecha = Carbon::now()->format('Y-m-d');
+        $bitacora->hora = Carbon::now()->format('H:i:s');
+        $bitacora->ip = $request->ip();
+        $bitacora->os = $request->server('HTTP_USER_AGENT');
+        $bitacora->navegador = $request->server('HTTP_USER_AGENT');
+        $bitacora->usuario = $request->usuariocreacion;
+        $bitacora->save();
     }
 
     /**
