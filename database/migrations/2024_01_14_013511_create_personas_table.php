@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rules\Unique;
 
 return new class extends Migration
 {
@@ -13,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('personas', function (Blueprint $table) {
             $table->id('idpersona');
+            $table->string('email')->unique();
             $table->string('primernombre');
             $table->string('segundonombre');
             $table->string('primerapellido');

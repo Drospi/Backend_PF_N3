@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bitacoras;
 use App\Models\Personas;
+use App\Models\User;
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -41,6 +42,7 @@ class PersonasController extends Controller
         $persona->segundonombre = $request->segundonombre;
         $persona->primerapellido = $request->primerapellido;
         $persona->segundoapellido = $request->segundoapellido;
+        $persona->email = $request->email;
         $persona->fechacreacion = Carbon::now()->format('Y-m-d');
         $persona->fechamodificacion = null;
         $persona->usuariocreacion = $request->usuariocreacion;

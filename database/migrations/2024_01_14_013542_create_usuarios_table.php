@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('idusuario');
             $table->foreignId('idpersona')->nullable()->constrained('personas', 'idpersona')->onDelete('cascade');
             $table->foreignId('idrol')->nullable()->constrained('roles', 'idrol')->onDelete('set null');
-            $table->string('usuario')->unique();
+            $table->string('usuario');
             $table->string('clave');
             $table->boolean('habilitado')->default(false);
             $table->date('fechacreacion');
