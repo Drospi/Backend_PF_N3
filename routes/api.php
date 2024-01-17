@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BitacorasController;
 use App\Http\Controllers\EnlacesController;
 use App\Http\Controllers\PaginasController;
 use App\Http\Controllers\PersonasController;
@@ -65,4 +66,10 @@ Route::group([
     Route::post('/roles', [RolesController::class, 'store']);
     Route::put('/roles/{id}', [RolesController::class, 'update']);
     Route::delete('/roles/{id}', [RolesController::class, 'destroy']);
+
+    Route::get('/bitacoras', [BitacorasController::class, 'index']);
+    Route::get('/bitacoras/{id}', [BitacorasController::class, 'show']);
+    Route::post('/bitacoras', [BitacorasController::class, 'store']);
+    Route::put('/bitacoras/{id}', [BitacorasController::class, 'update']);
+    Route::delete('/bitacoras/{id}', [BitacorasController::class, 'destroy']);
 });

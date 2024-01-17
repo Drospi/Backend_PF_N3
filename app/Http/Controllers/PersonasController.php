@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bitacoras;
 use App\Models\Personas;
+use App\Models\Roles;
 use App\Models\User;
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
@@ -16,7 +17,22 @@ class PersonasController extends Controller
      */
     public function index()
     {
-        return Personas::all();
+        $usuario = Personas::all()->first();
+
+
+        // Verificar si el usuario existe
+        if ($usuario) {
+            // Realizar left join con la tabla personas
+            $persona = Usuarios::join('personas', 'personas.idpersona', '=', 'usuarios.idpersona')
+                ->join('roles', 'roles.idrol', '=', 'usuarios.idrol')
+                ->get();
+
+
+            return $persona;
+        } else {
+            // Manejar el caso en que el usuario no existe
+            return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+        }
     }
 
     /**
@@ -51,7 +67,7 @@ class PersonasController extends Controller
         $persona->save();
 
         $usuario = new Usuarios();
-        $usuario->idpersona = $persona->idpersona;
+        $usuario->idpersona = $persona->id;
         $usuario->idrol = $request->idrol;
         $usuario->usuario = $request->usuario;
         $usuario->clave = $request->clave;
@@ -90,10 +106,22 @@ class PersonasController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show($idusuario)
     {
-        $persona = Personas::find($id);
-        return $persona;
+        $usuario = Usuarios::where('idusuario', '=', $idusuario)->first();
+
+        // Verificar si el usuario existe
+        if ($usuario) {
+            // Realizar left join con la tabla personas
+            $persona = Usuarios::join('personas', 'personas.idpersona', '=', 'usuarios.idpersona')
+                ->select('personas.*', 'usuarios.*')
+                ->get();
+
+            return $persona;
+        } else {
+            // Manejar el caso en que el usuario no existe
+            return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+        }
     }
 
     /**
