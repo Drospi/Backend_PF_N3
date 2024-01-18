@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bitacoras;
 use App\Models\Roles;
+use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -30,11 +31,12 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
+        $usuario = Usuarios::where('idusuario', '=', $request->idusuario)->first();
         $rol = new Roles();
         $rol->rol = $request->rol;
         $rol->fechacreacion = Carbon::now()->format('Y-m-d');
         $rol->fechamodificacion = null;
-        $rol->usuariocreacion = $request->usuariocreacion;
+        $rol->usuariocreacion = $usuario->usuario;
         $rol->usuariomodificacion = null;
         $rol->save();
 
@@ -46,7 +48,7 @@ class RolesController extends Controller
         $bitacora->ip = $request->ip();
         $bitacora->os = $request->server('HTTP_USER_AGENT');
         $bitacora->navegador = $request->server('HTTP_USER_AGENT');
-        $bitacora->usuario = $request->usuariocreacion;
+        $bitacora->usuario = $usuario->usuario;
         $bitacora->save();
     }
 
@@ -71,12 +73,13 @@ class RolesController extends Controller
      */
     public function update(Request $request, Roles $id)
     {
-        $rol = Roles::find($id);
+        $usuario = Usuarios::where('idusuario', '=', $request->idusuario)->first();
+        $rol = Roles::where('idrol', '=', $id);
         $rol->rol = $request->rol;
-        $rol->fechacreacion = Carbon::now()->format('Y-m-d');
-        $rol->fechamodificacion = null;
-        $rol->usuariocreacion = $request->usuariocreacion;
-        $rol->usuariomodificacion = null;
+        $rol->fechacreacion = $rol->fechacreacion;
+        $rol->fechamodificacion = Carbon::now()->format('Y-m-d');
+        $rol->usuariocreacion = $rol->usuariocreacion;
+        $rol->usuariomodificacion = $usuario->usuario;
         $rol->save();
 
         $bitacora = new Bitacoras();

@@ -137,17 +137,47 @@ class PersonasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $persona = Personas::find($id);
+        $usuariomodif = Usuarios::where('idusuario', '=', $request->idusuariomodificacion)->first();
+        $usuariomodificacion = $usuariomodif->usuario;
+        $persona = Personas::where('idpersona', '=', $id)->first();
         $persona->primernombre = $request->primernombre;
         $persona->segundonombre = $request->segundonombre;
         $persona->primerapellido = $request->primerapellido;
         $persona->segundoapellido = $request->segundoapellido;
-        $persona->fechacreacion = $request->fechacreacion;
-        $persona->fechamodificacion = $request->fechamodificacion;
-        $persona->usuariocreacion = $request->usuariocreacion;
-        $persona->usuariomodificacion = $request->usuariomodificacion;
-
+        $persona->fechacreacion = $persona->fechacreacion;
+        $persona->fechamodificacion =Carbon::now()->format('Y-m-d');
+        $persona->usuariocreacion = $persona->usuariocreacion;
+        $persona->usuariomodificacion = $usuariomodificacion;
         $persona->save();
+
+        $usuario = Usuarios::where('idpersona', '=', $id)->first();
+        $usuario->idrol = $request->idrol;
+        $usuario->usuario = $request->usuario;
+        $usuario->clave = $request->clave;
+        $usuario->habilitado = false;
+        $usuario->fechacreacion = $usuario->fechacreacion;
+        $usuario->fechamodificacion = Carbon::now()->format('Y-m-d');;
+        $usuario->usuariocreacion = $usuario->usuariocreacion;
+        $usuario->usuariomodificacion = $usuariomodificacion;
+        $usuario->save();
+
+        $user = User::where('id', '=', $usuario->id)->first();
+        $user->name = $request->usuario;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->clave);
+        $user->save();
+
+        $bitacora = new Bitacoras();
+        $bitacora->idusuario = $usuario->id;
+        $bitacora->bitacora = 'Se ha modificado el usuario'. $usuario->usuario;
+        $bitacora->fecha = Carbon::now()->format('Y-m-d');
+        $bitacora->hora = Carbon::now()->format('H:i:s');
+        $bitacora->ip = $request->ip();
+        $bitacora->os = $request->server('HTTP_USER_AGENT');
+        $bitacora->navegador = $request->server('HTTP_USER_AGENT');
+        $bitacora->usuario = $usuariomodificacion;
+        $bitacora->save();
+
     }
 
     /**
