@@ -23,8 +23,7 @@ class PersonasController extends Controller
         // Verificar si el usuario existe
         if ($usuario) {
             // Realizar left join con la tabla personas
-            $persona = Usuarios::join('personas', 'personas.idpersona', '=', 'usuarios.idpersona')
-                ->join('roles', 'roles.idrol', '=', 'usuarios.idrol')
+            $persona = Usuarios::join('personas', 'personas.id', '=', 'usuarios.idpersona')
                 ->get();
 
 
@@ -108,12 +107,12 @@ class PersonasController extends Controller
      */
     public function show($idusuario)
     {
-        $usuario = Usuarios::where('idusuario', '=', $idusuario)->first();
+        $usuario = Usuarios::find( $idusuario)->first();
 
         // Verificar si el usuario existe
         if ($usuario) {
             // Realizar left join con la tabla personas
-            $persona = Usuarios::join('personas', 'personas.idpersona', '=', 'usuarios.idpersona')
+            $persona = Usuarios::join('personas', 'personas.id', '=', 'usuarios.idpersona')
                 ->select('personas.*', 'usuarios.*')
                 ->get();
 
@@ -135,49 +134,65 @@ class PersonasController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $idpersona)
     {
-        $usuariomodif = Usuarios::where('idusuario', '=', $request->idusuariomodificacion)->first();
-        $usuariomodificacion = $usuariomodif->usuario;
-        $persona = Personas::where('idpersona', '=', $id)->first();
-        $persona->primernombre = $request->primernombre;
-        $persona->segundonombre = $request->segundonombre;
-        $persona->primerapellido = $request->primerapellido;
-        $persona->segundoapellido = $request->segundoapellido;
-        $persona->fechacreacion = $persona->fechacreacion;
-        $persona->fechamodificacion =Carbon::now()->format('Y-m-d');
-        $persona->usuariocreacion = $persona->usuariocreacion;
-        $persona->usuariomodificacion = $usuariomodificacion;
-        $persona->save();
+        $persona = Personas::find($idpersona);
+        $usuariomodif = Usuarios::where('id', '=', $request->idusuariomodificacion)->first();
 
-        $usuario = Usuarios::where('idpersona', '=', $id)->first();
-        $usuario->idrol = $request->idrol;
-        $usuario->usuario = $request->usuario;
-        $usuario->clave = $request->clave;
-        $usuario->habilitado = false;
-        $usuario->fechacreacion = $usuario->fechacreacion;
-        $usuario->fechamodificacion = Carbon::now()->format('Y-m-d');;
-        $usuario->usuariocreacion = $usuario->usuariocreacion;
-        $usuario->usuariomodificacion = $usuariomodificacion;
-        $usuario->save();
+        if ($usuariomodif) {
+            $usuariomodificacion = $usuariomodif->usuario;
 
-        $user = User::where('id', '=', $usuario->id)->first();
-        $user->name = $request->usuario;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->clave);
-        $user->save();
+            if ($persona) {
+                $persona->primernombre = $request->primernombre;
+                $persona->segundonombre = $request->segundonombre;
+                $persona->primerapellido = $request->primerapellido;
+                $persona->segundoapellido = $request->segundoapellido;
+                $persona->fechamodificacion = Carbon::now()->format('Y-m-d');
+                $persona->usuariomodificacion = $usuariomodificacion;
+                $persona->save();
 
-        $bitacora = new Bitacoras();
-        $bitacora->idusuario = $usuario->id;
-        $bitacora->bitacora = 'Se ha modificado el usuario'. $usuario->usuario;
-        $bitacora->fecha = Carbon::now()->format('Y-m-d');
-        $bitacora->hora = Carbon::now()->format('H:i:s');
-        $bitacora->ip = $request->ip();
-        $bitacora->os = $request->server('HTTP_USER_AGENT');
-        $bitacora->navegador = $request->server('HTTP_USER_AGENT');
-        $bitacora->usuario = $usuariomodificacion;
-        $bitacora->save();
+                $usuario = Usuarios::where('idpersona', '=', $idpersona)->first();
 
+                if ($usuario) {
+                    $usuario->idrol = $request->idrol;
+                    $usuario->usuario = $request->usuario;
+                    $usuario->clave = $request->clave;
+                    $usuario->habilitado = false;
+                    $usuario->fechamodificacion = Carbon::now()->format('Y-m-d');
+                    $usuario->usuariomodificacion = $usuariomodificacion;
+                    $usuario->save();
+
+                    $user = User::where('id', '=', $usuario->id)->first();
+
+                    if ($user) {
+                        $user->name = $request->usuario;
+                        $user->email = $request->email;
+                        $user->password = bcrypt($request->clave);
+                        $user->save();
+                    }
+
+                    $bitacora = new Bitacoras();
+                    $bitacora->idusuario = $usuario->id;
+                    $bitacora->bitacora = 'Se ha modificado el usuario' . $usuario->usuario;
+                    $bitacora->fecha = Carbon::now()->format('Y-m-d');
+                    $bitacora->hora = Carbon::now()->format('H:i:s');
+                    $bitacora->ip = $request->ip();
+                    $bitacora->os = $request->server('HTTP_USER_AGENT');
+                    $bitacora->navegador = $request->server('HTTP_USER_AGENT');
+                    $bitacora->usuario = $usuariomodificacion;
+                    $bitacora->save();
+                }
+            } else {
+                // Handle the case where the persona doesn't exist
+                return response()->json(['mensaje' => 'Persona no encontrada'], 404);
+            }
+        } else {
+            // Handle the case where the usuario modificador doesn't exist
+            return response()->json(['mensaje' => 'Usuario modificador no encontrado'], 404);
+        }
+
+        // Return a success response if needed
+        return response()->json(['mensaje' => 'Usuario actualizado correctamente'], 200);
     }
 
     /**

@@ -66,7 +66,6 @@ class UsuariosController extends Controller implements JWTSubject
     public function update(Request $request, $id)
     {
         $usuario = Usuarios::find($id);
-        $usuario->idpersona = $request->idpersona;
         $usuario->idrol = $request->idrol;
         $usuario->usuario = $request->usuario;
         $usuario->clave = $request->clave;

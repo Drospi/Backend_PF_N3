@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('usuarios', function (Blueprint $table) {
-            $table->id('idusuario');
-            $table->foreignId('idpersona')->constrained('personas', 'idpersona')->onDelete('cascade');
-            $table->foreignId('idrol')->nullable()->constrained('roles', 'idrol')->onDelete('set null');
+            $table->id();
+            $table->foreignId('idpersona')->constrained('personas')->onDelete('cascade');
+            $table->foreignId('idrol')->nullable()->constrained('roles')->onDelete('set null');
             $table->string('usuario');
             $table->string('clave');
             $table->boolean('habilitado')->default(false);

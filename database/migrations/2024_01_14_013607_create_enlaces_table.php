@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('enlaces', function (Blueprint $table) {
-            $table->id('idenlace');
-            $table->foreignId('idpagina')->constrained('paginas','idpagina')->onDelete('cascade');
-            $table->foreignId('idrol')->constrained('roles','idrol')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('idpagina')->constrained('paginas')->onDelete('cascade');
             $table->string('descripcion');
             $table->date('fechacreacion');
             $table->date('fechamodificacion')->nullable();

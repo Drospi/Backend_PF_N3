@@ -31,7 +31,7 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        $usuario = Usuarios::where('idusuario', '=', $request->idusuario)->first();
+        $usuario = Usuarios::find($request->idusuario)->first();
         $rol = new Roles();
         $rol->rol = $request->rol;
         $rol->fechacreacion = Carbon::now()->format('Y-m-d');

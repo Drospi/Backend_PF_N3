@@ -12,16 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('paginas', function (Blueprint $table) {
-            $table->id('idpagina');
+            $table->id();
             $table->date('fechacreacion');
             $table->date('fechamodificacion')->nullable();
             $table->string('usuariocreacion');
             $table->string('usuariomodificacion')->nullable();
             $table->string('url');
-            $table->string('icono');
             $table->string('nombre');
             $table->string('descripcion');
-            $table->string('estado');
+            $table->string('estado')->default('Activo');
             $table->string('tipo');
             $table->timestamps();
         });

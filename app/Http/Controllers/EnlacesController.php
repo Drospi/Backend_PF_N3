@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Bitacoras;
 use App\Models\Enlaces;
+use App\Models\Paginas;
+use App\Models\Usuarios;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -14,7 +16,18 @@ class EnlacesController extends Controller
      */
     public function index()
     {
-        return Enlaces::all();
+        $enlace = Enlaces::all()->first();
+        if ($enlace) {
+            // Realizar left join con la tabla personas
+            $persona = Enlaces::join('paginas', 'paginas.id', '=', 'enlaces.idpagina')
+                ->select('paginas.*', 'enlaces.*')
+                ->get();
+
+            return $persona;
+        } else {
+            // Manejar el caso en que el usuario no existe
+            return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+        }
     }
 
     /**
@@ -30,26 +43,37 @@ class EnlacesController extends Controller
      */
     public function store(Request $request)
     {
+        $pagina = new Paginas();
+        $pagina->fechacreacion =  Carbon::now()->format('Y-m-d');
+        $pagina->fechamodificacion = null;
+        $usuariocreacion = Usuarios::find($request->idusuariocreacion);
+        $pagina->usuariocreacion = $usuariocreacion->usuario;
+        $pagina->usuariomodificacion = null;
+        $pagina->url = $request->url;
+        $pagina->nombre = $request->nombre;
+        $pagina->descripcion = $request->descripcion;
+        $pagina->tipo = $request->tipo;
+
+        $pagina->save();
         $enlace = new Enlaces();
-        $enlace->idpagina = $request->idpagina;
-        $enlace->idrol = $request->idrol;
+        $enlace->idpagina = $pagina->id;
         $enlace->descripcion = $request->descripcion;
-        $enlace->fechacreacion = $request->fechacreacion;
-        $enlace->fechamodificacion = $request->fechamodificacion;
-        $enlace->usuariocreacion = $request->usuariocreacion;
-        $enlace->usuariomodificacion = $request->usuariomodificacion;
+        $enlace->fechacreacion =  Carbon::now()->format('Y-m-d');
+        $enlace->fechamodificacion = null;
+        $enlace->usuariocreacion = $usuariocreacion->usuario;
+        $enlace->usuariomodificacion = null;
 
         $enlace->save();
 
         $bitacora = new Bitacoras();
-        $bitacora->idusuario = $request->idusuario;
-        $bitacora->bitacora = 'Se ha registrado un nuevo enlace';
+        $bitacora->idusuario = $request->idusuariocreacion;
+        $bitacora->bitacora = 'Se ha registrado un nuevo enlace'.$pagina->url. ' con su pagina'.$pagina->nombre;
         $bitacora->fecha = Carbon::now()->format('Y-m-d');
         $bitacora->hora = Carbon::now()->format('H:i:s');
         $bitacora->ip = $request->ip();
         $bitacora->os = $request->server('HTTP_USER_AGENT');
         $bitacora->navegador = $request->server('HTTP_USER_AGENT');
-        $bitacora->usuario = $request->usuariocreacion;
+        $bitacora->usuario = $usuariocreacion->usuario;
         $bitacora->save();
     }
 
@@ -59,7 +83,17 @@ class EnlacesController extends Controller
     public function show($id)
     {
         $enlace = Enlaces::find($id);
-        return $enlace;
+        if ($enlace) {
+            // Realizar left join con la tabla personas
+            $persona = Enlaces::join('paginas', 'paginas.id', '=', 'enlaces.idpagina')
+                ->select('paginas.*', 'enlaces.*')
+                ->get();
+
+            return $persona;
+        } else {
+            // Manejar el caso en que el usuario no existe
+            return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+        }
     }
 
     /**

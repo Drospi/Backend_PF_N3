@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bitacoras', function (Blueprint $table) {
-            $table->id('idbitacora');
-            $table->foreignId('idusuario')->nullable()->constrained('usuarios','idusuario')->onDelete('set null')->onUpdate('cascade');
+            $table->id();
+            $table->foreignId('idusuario')->nullable()->constrained('usuarios')->onDelete('set null')->onUpdate('cascade');
             $table->string('bitacora');
             $table->date('fecha');
             $table->time('hora');
