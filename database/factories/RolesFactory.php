@@ -17,7 +17,11 @@ class RolesFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'rol' => fake()->word(),
+            'fechacreacion' => fake()->date(),
+            'fechamodificacion' => fake()->date(),
+            'usuariocreacion' => fake()->userName(),
+            'usuariomodificacion' => fake()->userName(),
         ];
     }
 }

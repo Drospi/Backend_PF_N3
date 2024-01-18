@@ -112,9 +112,10 @@ class PersonasController extends Controller
         // Verificar si el usuario existe
         if ($usuario) {
             // Realizar left join con la tabla personas
-            $persona = Usuarios::join('personas', 'personas.id', '=', 'usuarios.idpersona')
-                ->select('personas.*', 'usuarios.*')
-                ->get();
+            $persona = Usuarios::leftJoin('personas', 'personas.id', '=', 'usuarios.id')
+            ->where('usuarios.id', '=', $idusuario)
+            ->select('personas.*', 'usuarios.*')
+            ->first();
 
             return $persona;
         } else {
